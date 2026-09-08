@@ -199,7 +199,8 @@ class ExcelStoreBase(AbstractStore):
             headers: List of header names
         """
         for col_num, header in enumerate(headers, 1):
-            sheet.cell(row=1, column=col_num, value=header)
+            cell = sheet.cell(row=1, column=col_num, value=header)
+            cell.data_type = "s"
 
         self._apply_header_style(sheet)
 
@@ -212,6 +213,13 @@ class ExcelStoreBase(AbstractStore):
             data: Data dictionary
             headers: List of header names (defines column order)
         """
+        # The first row defines the schema; each input dict may have a
+        # different insertion order or omit fields. New fields extend it.
+        existing_headers = [cell.value for cell in sheet[1]]
+        new_headers = [header for header in headers if header not in existing_headers]
+        headers = existing_headers + new_headers
+        if new_headers:
+            self._write_headers(sheet, headers)
         row_num = sheet.max_row + 1
 
         for col_num, header in enumerate(headers, 1):
@@ -224,6 +232,8 @@ class ExcelStoreBase(AbstractStore):
                 value = ""
 
             cell = sheet.cell(row=row_num, column=col_num, value=value)
+            if isinstance(value, str):
+                cell.data_type = "s"
 
             # Apply basic formatting
             cell.alignment = Alignment(vertical="top", wrap_text=True)
