@@ -248,6 +248,9 @@ async def parse_cmd(argv: Optional[Sequence[str]] = None):
             typer.Option(
                 "--cookies",
                 help="Cookie value used for Cookie login method",
+                envvar="MEDIACRAWLER_COOKIES",
+                show_envvar=False,
+                show_default=False,
                 rich_help_panel="Account Configuration",
             ),
         ] = config.COOKIES,
