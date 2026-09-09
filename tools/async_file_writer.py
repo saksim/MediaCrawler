@@ -56,13 +56,23 @@ class AsyncFileWriter:
         await self._run_file_operation(self._append_csv, file_path, item)
 
     @staticmethod
-    def _append_csv(file_path: str, item: Dict):
+    def _csv_value(value):
+        """Keep untrusted strings from becoming spreadsheet formulas."""
+        if isinstance(value, str) and (
+            value.lstrip().startswith(('=', '+', '-', '@'))
+            or value.startswith(('\t', '\r', '\n'))
+        ):
+            return "'" + value
+        return value
+
+    @classmethod
+    def _append_csv(cls, file_path: str, item: Dict):
         has_header = os.path.exists(file_path) and os.path.getsize(file_path) > 0
         with open(file_path, 'a', newline='', encoding='utf-8-sig') as target:
             writer = csv.DictWriter(target, fieldnames=item.keys())
             if not has_header:
                 writer.writeheader()
-            writer.writerow(item)
+            writer.writerow({key: cls._csv_value(value) for key, value in item.items()})
 
     async def _run_file_operation(self, operation, *args):
         """Keep the lock until thread I/O ends, including on cancellation."""
