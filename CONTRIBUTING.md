@@ -37,6 +37,11 @@ npm run build
 `Quality` 工作流在 Linux、Windows 上运行 Python 3.11 测试，并检查 WebUI 的类型与构建、VitePress 文档构建。
 工作流只读仓库，不注入账号凭据，不访问社交平台，不部署网站。
 
+`Deploy VitePress site to Pages` 在 fork 的普通 `main` 推送时跳过；
+文档构建仍由 `Quality` 检查。需要发布自己的站点时，先在仓库设置中启用
+GitHub Pages 并选择 GitHub Actions 作为来源，再手动运行该部署工作流。
+非 fork 仓库保留推送 `main` 自动发布的行为。
+
 GitHub runner 从 PyPI 下载依赖，避免跨境访问默认镜像时的大文件下载延迟。
 CI 先用 `uv export --locked` 校验锁文件，导出精确版本和哈希，再用
 `uv pip sync --require-hashes` 安装；测试使用 `uv run --no-sync`，避免重复下载。

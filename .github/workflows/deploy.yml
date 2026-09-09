@@ -26,6 +26,8 @@ concurrency:
 jobs:
   # 构建工作
   build:
+    # fork 默认只运行 Quality；配置 Pages 后可手动发布。
+    if: ${{ !github.event.repository.fork || github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
