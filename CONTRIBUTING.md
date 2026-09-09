@@ -37,6 +37,11 @@ npm run build
 `Quality` 工作流在 Linux、Windows 上运行 Python 3.11 测试，并检查 WebUI 的类型与构建、VitePress 文档构建。
 工作流只读仓库，不注入账号凭据，不访问社交平台，不部署网站。
 
+GitHub runner 从 PyPI 下载依赖，避免跨境访问默认镜像时的大文件下载延迟。
+CI 先用 `uv export --locked` 校验锁文件，导出精确版本和哈希，再用
+`uv pip sync --require-hashes` 安装；测试使用 `uv run --no-sync`，避免重复下载。
+这个 CI 下载来源调整不会修改项目的默认镜像、依赖版本或锁文件。
+
 Windows 沙箱若限制默认临时目录，可使用仓库内新建的临时目录，例如：
 
 ```bash

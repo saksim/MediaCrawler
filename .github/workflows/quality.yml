@@ -30,9 +30,14 @@ jobs:
           version: "0.10.9"
           python-version: "3.11"
           enable-cache: true
-      - run: uv sync --locked
+          prune-cache: false
+      - name: Verify and export locked dependencies
+        run: uv export --locked --no-emit-project --output-file "${{ runner.temp }}/requirements-ci.txt" --quiet
+      - run: uv venv
+      - name: Install hash-verified dependencies from PyPI
+        run: uv pip sync --no-config --require-hashes --default-index https://pypi.org/simple "${{ runner.temp }}/requirements-ci.txt"
       - name: Offline regression tests
-        run: uv run --locked pytest tests -q
+        run: uv run --no-sync pytest tests -q
 
   webui:
     name: WebUI build
