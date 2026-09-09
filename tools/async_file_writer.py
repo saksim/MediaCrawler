@@ -68,8 +68,18 @@ class AsyncFileWriter:
     @classmethod
     def _append_csv(cls, file_path: str, item: Dict):
         has_header = os.path.exists(file_path) and os.path.getsize(file_path) > 0
+        if has_header:
+            with open(file_path, newline='', encoding='utf-8-sig') as source:
+                headers = next(csv.reader(source))
+        else:
+            headers = list(item)
+
+        extra_fields = item.keys() - set(headers)
+        if extra_fields:
+            raise ValueError(f"CSV fields are not in the existing header: {sorted(extra_fields)}")
+
         with open(file_path, 'a', newline='', encoding='utf-8-sig') as target:
-            writer = csv.DictWriter(target, fieldnames=item.keys())
+            writer = csv.DictWriter(target, fieldnames=headers)
             if not has_header:
                 writer.writeheader()
             writer.writerow({key: cls._csv_value(value) for key, value in item.items()})
