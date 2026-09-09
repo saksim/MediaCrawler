@@ -23,6 +23,8 @@ Issue 属于仓库；Issue 正文记录发现问题的分支与提交，PR 负�
 ```bash
 uv sync --locked
 uv run --locked pytest tests -q
+npm ci
+npm run docs:build
 cd webui
 npm ci
 npm run build
@@ -32,7 +34,7 @@ npm run build
 `test/` 中还包含数据库、Redis、代理集成演示；仅在准备好专用测试服务后显式运行，
 不要对生产数据库运行结构同步脚本。锁文件是团队环境的基准，依赖变更应单独说明。
 
-`Quality` 工作流在 Linux、Windows 上运行 Python 3.11 测试，并检查 WebUI 的类型与构建。
+`Quality` 工作流在 Linux、Windows 上运行 Python 3.11 测试，并检查 WebUI 的类型与构建、VitePress 文档构建。
 工作流只读仓库，不注入账号凭据，不访问社交平台，不部署网站。
 
 Windows 沙箱若限制默认临时目录，可使用仓库内新建的临时目录，例如：
@@ -80,7 +82,7 @@ WebUI（#1、#2、#9）的顺序，每个 Issue 单独提交一个修复 PR。
 
 `.github/CODEOWNERS` 指定本 fork 的维护者 `@saksim`，不自动请求上游作者审查。
 有第二位具备写权限的协作者后，可为 `main` 配置：必须走 PR、至少一次非作者 Approval、
-必须通过三个 Quality 检查、必须解决对话、禁止 force push。
+必须通过四个 Quality 检查、必须解决对话、禁止 force push。
 这些门禁需要在 GitHub 设置中启用，仓库里的文档和 CODEOWNERS 本身不会强制执行。
 只有一个开发者时不要强制无法满足的第二人审批；可先练习 Issue、分支、PR、CI 和自检。
 

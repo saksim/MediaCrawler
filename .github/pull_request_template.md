@@ -13,6 +13,7 @@ Closes #<issue-number>
 - [ ] 修复后相关回归测试通过
 - [ ] `uv sync --locked` 和 `uv run --locked pytest tests -q` 通过
 - [ ] 涉及 WebUI 时 `cd webui && npm ci && npm run build` 通过，并验证交互
+- [ ] 涉及文档时 `npm ci` 和 `npm run docs:build` 通过
 - [ ] 测试没有使用真实 Cookie、账号、短信或在线爬取
 
 写明实际命令、结果和未覆盖场景。不要勾选未执行的检查。
