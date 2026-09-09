@@ -11,7 +11,7 @@ Closes #<issue-number>
 
 - [ ] 修复前能用测试复现
 - [ ] 修复后相关回归测试通过
-- [ ] `uv run --frozen pytest tests -q` 通过
+- [ ] `uv sync --locked` 和 `uv run --locked pytest tests -q` 通过
 - [ ] 涉及 WebUI 时 `cd webui && npm ci && npm run build` 通过，并验证交互
 - [ ] 测试没有使用真实 Cookie、账号、短信或在线爬取
 

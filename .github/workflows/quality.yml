@@ -30,9 +30,9 @@ jobs:
           version: "0.10.9"
           python-version: "3.11"
           enable-cache: true
-      - run: uv sync --frozen
+      - run: uv sync --locked
       - name: Offline regression tests
-        run: uv run --frozen pytest tests -q
+        run: uv run --locked pytest tests -q
 
   webui:
     name: WebUI build

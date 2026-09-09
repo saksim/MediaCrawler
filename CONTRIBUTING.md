@@ -9,8 +9,8 @@ Issue 属于仓库；Issue 正文记录发现问题的分支与提交，PR 负�
 1. 建立 Issue：写清用户影响、当前提交、最小复现、预期/实际结果和验收标准。
    P1 表示需要优先修复的安全、数据丢失或核心功能问题；P2 表示有明确影响但可绕开的缺陷。
    判断优先级时同时考虑影响范围和触发条件，不把每个缺陷都叫严重漏洞。
-2. 从最新 `main` 创建短期分支，如 `codex/fix-json-export`。一个 PR 可以关闭同一模块中
-   几个紧密相关的 Issue；不同模块分开。多人开发时每人使用自己的分支和 worktree。
+2. 从最新 `main` 创建短期分支，如 `codex/fix-json-export`。一个 PR 解决一个可独立
+   审查、合并、回退的问题；同一模块的不同缺陷也分别处理。多人开发时每人使用自己的分支和 worktree。
 3. 先写能失败的最小回归测试，再修复。正常值、边界、失败/取消路径都要考虑。
 4. 提交 PR，使用模板解释问题与最终行为，写 `Closes #编号` 关联 Issue，附实际测试结果。
 5. Reviewer 根据 Issue 验收标准检查逻辑、错误处理、数据完整性、兼容性和测试有效性。
@@ -21,8 +21,8 @@ Issue 属于仓库；Issue 正文记录发现问题的分支与提交，PR 负�
 ## 本地验证
 
 ```bash
-uv sync --frozen
-uv run --frozen pytest tests -q
+uv sync --locked
+uv run --locked pytest tests -q
 cd webui
 npm ci
 npm run build
@@ -38,11 +38,34 @@ npm run build
 Windows 沙箱若限制默认临时目录，可使用仓库内新建的临时目录，例如：
 
 ```bash
-uv --cache-dir .cache/uv sync --frozen
-uv run --frozen pytest tests -q --basetemp=.cache/pytest-local -o cache_dir=.cache/pytest-cache
+uv --cache-dir .cache/uv sync --locked
+uv run --locked pytest tests -q --basetemp=.cache/pytest-local -o cache_dir=.cache/pytest-cache
 ```
 
 `--basetemp` 会清理其目标目录，只能指向专用测试临时目录，不能指向数据目录。
+
+`--locked` 同时校验 `pyproject.toml` 与 `uv.lock` 一致；依赖变更后应运行 `uv lock`，
+提交两个文件，并说明依赖变化。不要用 `--frozen` 跳过这项校验。
+
+## 提交和合并约定
+
+本轮新增 commit（包括 squash 和同步主分支的 merge commit）的标题统一以
+`CODEX-6-ASTRA：` 开头，例如 `CODEX-6-ASTRA：修复 JSON 原子写入`。
+已有历史提交保留；squash 合并后，`main` 上每个 PR 对应一个带此前缀的提交。
+
+一个工作提交包含该问题的实现与回归测试。审查中可以追加修正提交，最终 squash 为一个
+可回退的修复提交；无需把“一个 PR”误解为审查期间只能有一次 commit。
+
+本轮先处理 [#11](https://github.com/saksim/MediaCrawler/pull/11)（协作流程），
+再按缓存（Issue #3、#10）、数据库（#8、#7）、文件导出（#4、#5、#6）、
+WebUI（#1、#2、#9）的顺序，每个 Issue 单独提交一个修复 PR。
+原来按模块合并的 PR #12–#15 会被这些独立 PR 替代，并在原 PR 中记录替代关系。
+每个 PR 先同步最新 `main`，处理所有有效审查意见，重新通过 CI，再 squash 合并。
+
+这里的 `main` 属于自己的 fork。当前使用短期修复分支汇入 fork 的 `main`，
+无需额外维护 `dev`。向原作者贡献时，从上游最新 `main` 单独建立贡献分支，
+每个缺陷单独移植适用于上游的修复和测试，并单独提出 PR；fork 的维护者、个人信息处理策略和协作文档不混入上游 PR。
+上游 PR 的最终审查与合并由原作者决定。
 
 ## Python 代码习惯
 
