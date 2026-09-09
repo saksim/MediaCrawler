@@ -1,18 +1,18 @@
-# 默认：仓库所有文件都需要 @NanmiCoder 审核
-*                                   @NanmiCoder
+# 本 fork 的维护者。CODEOWNERS 指定负责人，分支规则决定是否强制审查。
+*                                   @saksim
 
 
-.github/workflows/**               @NanmiCoder
+.github/workflows/**               @saksim
 
 
-requirements.txt                   @NanmiCoder
-pyproject.toml                     @NanmiCoder
-Pipfile                            @NanmiCoder
-package.json                       @NanmiCoder
-package-lock.json                  @NanmiCoder
-pnpm-lock.yaml                     @NanmiCoder
+requirements.txt                   @saksim
+pyproject.toml                     @saksim
+Pipfile                            @saksim
+package.json                       @saksim
+package-lock.json                  @saksim
+pnpm-lock.yaml                     @saksim
 
 
-Dockerfile                         @NanmiCoder
-docker/**                          @NanmiCoder
-scripts/deploy/**                  @NanmiCoder
+Dockerfile                         @saksim
+docker/**                          @saksim
+scripts/deploy/**                  @saksim
